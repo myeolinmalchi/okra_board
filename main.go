@@ -10,7 +10,7 @@ import (
 func main(){
 
     config.InitDBConnection()
-    gin.SetMode(gin.ReleaseMode)
+    //gin.SetMode(gin.ReleaseMode)
 
     r := gin.Default()
     r.Use(CORSMiddleware())
