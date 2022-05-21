@@ -1,34 +1,41 @@
 package main
 
 import (
-    "./config"
-    "./services"
-    "./controllers"
+    "okra_board/config"
+    "okra_board/services"
+    "okra_board/controllers"
     "github.com/gin-gonic/gin"
 )
 
 func main(){
 
     config.InitDBConnection()
-    //gin.SetMode(gin.ReleaseMode)
+    gin.SetMode(gin.ReleaseMode)
 
     r := gin.Default()
     r.Use(CORSMiddleware())
+    r.Static("/images", "./public/images")
 
     v1 := r.Group("/api/v1")
     {
+        /* route for Posts */
         v1.GET("posts", controllers.GetPosts)
         v1.GET("posts/:postId", controllers.GetPost)
+
         v1.POST("posts", AuthMiddleware(), controllers.InsertPost)
         v1.PUT("posts/:postId", AuthMiddleware(), controllers.UpdatePost)
         v1.DELETE("posts/:postId", AuthMiddleware(), controllers.DeletePost)
+
         v1.POST("posts/select", AuthMiddleware(), controllers.ResetSelectedPost)
 
         v1.GET("thumbnails", controllers.GetThumbnails)
         v1.GET("thumbnails/selected", controllers.GetSelectedThumbnails)
+        /* route for Posts */
 
+        /* route for Admin */
         v1.POST("admin", AuthMiddleware(), controllers.AdminRegist)
         v1.POST("admin/login", controllers.AdminLogin)
+        /* route for Admin */
     }
     r.Run(":3000")
 }

@@ -2,19 +2,36 @@ package services
 
 import (
 	"errors"
-	"../config"
-	"../models"
+	"okra_board/config"
+	"okra_board/models"
 	"gorm.io/gorm"
 )
 
-func GetPosts(page int, size int) (posts []models.Post) {
+func GetPosts(page, size int) (posts []models.Post) {
     config.DB.Limit(size).Offset((page-1)*size).Find(&posts)
     return
 }
 
-func GetEnabledPosts(page int, size int) (posts [] models.Post) {
+func GetEnabledPosts(page, size int) (posts [] models.Post) {
     config.DB.
         Where("status = ?", true).
+        Limit(size).Offset((page-1)*size).
+        Find(&posts)
+    return
+}
+
+func GetPostsWithBoardID(boardId, page, size int) (posts []models.Post) {
+    config.DB.
+        Where("board_id = ?", boardId).
+        Limit(size).Offset((page-1)*size).
+        Find(&posts)
+    return
+}
+
+func GetEnabledPostsWithBoardID(boardId, page, size int) (posts []models.Post) {
+    config.DB.
+        Where("status = ?", true).
+        Where("board_id = ?", boardId).
         Limit(size).Offset((page-1)*size).
         Find(&posts)
     return
@@ -61,6 +78,9 @@ func GetSelectedThumbnails() (thumbnails []models.Thumbnail) {
 func InsertPost(post *models.Post) error {
     for i := 0; i < len(post.Contents); i++ {
         post.Contents[i].Sequence = i + 1 
+        if post.Contents[i].Type == "image" {
+
+        }
     }
     return config.DB.Create(post).Error
 }

@@ -1,8 +1,8 @@
 package controllers
 
 import (
-    "../services"
-    "../models"
+    "okra_board/services"
+    "okra_board/models"
     "github.com/gin-gonic/gin"
 )
 

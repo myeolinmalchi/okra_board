@@ -2,8 +2,9 @@ package controllers
 
 import (
 	"strconv"
-	"../models"
-	"../services"
+	"okra_board/models"
+	"okra_board/services"
+    "okra_board/config"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -15,14 +16,41 @@ func GetPosts(c *gin.Context) {
         c.Status(400)
         return
     }
-    var posts []models.Post
+    query := config.DB.Table("posts")
+    boardIdStr, boardIdExists := c.GetQuery("boardId")
+    keyword, keywordExists := c.GetQuery("keyword")
     token := c.Request.Header.Get("Authorization")
     if err := services.VerifyToken(token); token == "" || err != nil {
-        posts = services.GetEnabledPosts(page, size)
-    } else {
-        posts = services.GetPosts(page, size)
+        query = query.Where("status = ?", true)
+    } 
+    if boardIdExists {
+        boardId, err := strconv.Atoi(boardIdStr)
+        if err != nil {
+            c.Status(400)
+            return
+        }
+        query = query.Where("board_id = ?", boardId)
     }
-    c.IndentedJSON(200, posts)
+    if keywordExists {
+        query = query.Where("title like ?", "%"+keyword+"%")
+    }
+    var postCount int
+    if err := config.DB.Table("(?) as a", query).Select("count(*)").Find(&postCount).Error; err != nil {
+        c.Status(400)
+        return
+    }
+
+    query = query.Limit(size).Offset((page - 1) * size)
+
+    var posts []models.Post
+    query.Find(&posts)
+
+    c.IndentedJSON(200, gin.H {
+        "nowPage": page,
+        "pageCount": int(postCount / size) + 1,
+        "pageSize": size,
+        "posts": posts,
+    })
 }
 
 func GetThumbnails(c *gin.Context) { 

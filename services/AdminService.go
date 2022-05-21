@@ -1,9 +1,9 @@
 package services
 
 import (
-    "../common/encryption"
-    "../config"
-    "../models"
+    "okra_board/config"
+    "okra_board/common/encryption"
+    "okra_board/models"
     "regexp"
     "github.com/dgrijalva/jwt-go"
     "time"
