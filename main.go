@@ -19,6 +19,8 @@ func main(){
     whiteList := make(map[string]bool)
     whiteList["124.54.16.127"] = true
 
+    r.Use(mw.IPWhiteList(whiteList))
+
     v1 := r.Group("/api/v1")
     {
         /* route for Posts */
