@@ -5,7 +5,7 @@ import (
     "okra_board/common/encryption"
     "okra_board/models"
     "regexp"
-    "github.com/dgrijalva/jwt-go"
+    "github.com/golang-jwt/jwt"
     "time"
     "errors"
 )
