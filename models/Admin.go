@@ -8,7 +8,7 @@ type Admin struct {
     Phone       string      `json:"phone,omitemtpy"`
 }
 
-type AdminValidtionResult struct {
+type AdminValidationResult struct {
     ID          *string      `json:"id,omitempty"`
     Password    *string      `json:"pw,omitempty"`
     Name        *string      `json:"name,omitempty"`
