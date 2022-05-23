@@ -1,7 +1,7 @@
 package models
 
 type Admin struct {
-    ID          string      `json:"id"`
+    ID          string      `json:"id" gorm:"<-:create"`
     Password    string      `json:"pw"`
     Name        string      `json:"name,omitempty"`
     Email       string      `json:"email,omitempty"`
